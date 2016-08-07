@@ -15,12 +15,12 @@ public class PingHandler implements PBRequestHandler {
 	public Message process(PBSession session, Message msg) {
 		logger.info("Ping from:" + session.getSession().remoteAddress());
 		Message reply = new Message();
-		reply.setContent(PBCONSTANT.PING);
+		/*reply.setContent(PBCONSTANT.PING);
 		reply.setReceiver_uid(msg.getSender_uid());
 		reply.setSender_uid(PBCONSTANT.SYSTEM);
 		reply.setTitle(PBCONSTANT.PING);
 		reply.setType(PBCONSTANT.PING);
-		reply.setTime(System.currentTimeMillis());
+		reply.setTime(System.currentTimeMillis());*/
 		return reply;
 	}
 

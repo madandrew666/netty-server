@@ -11,12 +11,12 @@ public class LogoutHandler implements PBRequestHandler {
 	@Override
 	public Message process(PBSession session, Message msg) {
 
-		if (msg.getType().equals(PBCONSTANT.LOGOUT)) {
+		/*if (msg.getType().equals(PBCONSTANT.LOGOUT)) {
 			SessionManage sessionManager = (SessionManage) ContexHolder
 					.getBean("pbSessionManage");
 			session.close();
 			sessionManager.remove(msg.getSender_uid());
-		}
+		}*/
 
 		return null;
 	}

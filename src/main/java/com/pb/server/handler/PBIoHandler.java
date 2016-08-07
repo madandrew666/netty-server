@@ -2,6 +2,7 @@ package com.pb.server.handler;
 
 import java.util.Map;
 
+import com.server.constant.PBCONSTANT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,16 @@ public class PBIoHandler extends SimpleChannelInboundHandler<Message> {
 				+ msg.toString());
 		if (msg != null) {
 			PBSession Pbsession = new PBSession(ctx.channel());
-			Message reply = handlers.get(msg.getType()).process(Pbsession, msg);
+			Message reply = null;
+			switch (msg.getType()) {
+				case 1:
+					reply = handlers.get(PBCONSTANT.LOGIN).process(Pbsession, msg);
+					break;
+				case 2:
+					reply = handlers.get(PBCONSTANT.MESSAGE).process(Pbsession,msg);
+					break;
+				default:
+			}
 			Pbsession.write(reply);
 		}
 	}
@@ -43,4 +53,6 @@ public class PBIoHandler extends SimpleChannelInboundHandler<Message> {
 	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
 		System.out.println("unregistered");
 	}
+
+
 }

@@ -16,43 +16,31 @@ public class LoginHandler implements PBRequestHandler {
 	@Override
 	public Message process(PBSession session, Message msg) {
 		Message reply = new Message();
-		reply.setReceiver_uid(msg.getSender_uid());
-		reply.setTitle(PBCONSTANT.LOGIN_REPLY);
-		reply.setSender_uid(PBCONSTANT.SYSTEM);
-		reply.setType(PBCONSTANT.LOGIN_REPLY);
-		reply.setTime(System.currentTimeMillis());
-		if (!(msg instanceof loginMsg)) {
-			reply.setContent(PBCONSTANT.FAIL);
-			return reply;
-		}
+		reply.setType(PBCONSTANT.LOGIN_REPLY_FLAG);
+
 		SessionManage sessionManager = (SessionManage) ContexHolder
 				.getBean("pbSessionManage");
-		loginMsg loginmsg = (loginMsg) msg;
 		logger.info("Received loginMsg:"+msg.toString());
-		session.setChannel(loginmsg.getChannel());
-		session.setClientVersion(loginmsg.getClientVersion());
-		session.setDeviceId(loginmsg.getDeviceId());
-		session.setDeviceModel(loginmsg.getDeviceModel());
-		session.setUid(loginmsg.getSender_uid());
-		session.setSystemVersion(loginmsg.getSystemVersion());
-		if (msg.getSender_uid().equals("test1")
-				&& (msg.getContent().equals("123"))) {
-			reply.setContent(PBCONSTANT.SUCCESS);
-			PBSession oldsession = sessionManager.get(msg.getSender_uid());
+
+		if (msg.get("s_uid").equals("test1")
+				&& (msg.get("pwd").equals("123"))) {
+			reply.setParam("st","sc");
+			PBSession oldsession = sessionManager.get(msg.get("s_uid"));
 			if (oldsession == null)
-				sessionManager.add(msg.getSender_uid(), session);
+				sessionManager.add(msg.get("s_uid"), session);
 			else if (oldsession == session) {
 			} else {
 				sendForceOffLine(oldsession);
-				sessionManager.add(msg.getSender_uid(), session);
+				sessionManager.add(msg.get("s_uid"), session);
 			}
-		} else if (msg.getSender_uid().equals("test2")
-				&& (msg.getContent().equals("123"))) {
-			reply.setContent(PBCONSTANT.SUCCESS);
-			sessionManager.add(msg.getSender_uid(), session);
+		} else if (msg.get("s_uid").equals("test2")
+				&& (msg.get("pwd").equals("123"))) {
+			reply.setParam("st","sc");
+			sessionManager.add(msg.get("s_uid"), session);
 		} else {
-			reply.setContent(PBCONSTANT.FAIL);
+			reply.setParam("st","fl");
 		}
+        reply.setParam("s_uid",PBCONSTANT.SYSTEM);
 		return reply;
 	}
 
@@ -61,12 +49,6 @@ public class LoginHandler implements PBRequestHandler {
 				+ session.getSession().remoteAddress() + " on "
 				+ session.getDeviceId());
 		Message force = new Message();
-		force.setType(PBCONSTANT.FORCEOFFLINE);
-		force.setTitle(PBCONSTANT.FORCEOFFLINE);
-		force.setContent(PBCONSTANT.FORCEOFFLINE);
-		force.setReceiver_uid(session.getUid());
-		force.setSender_uid(PBCONSTANT.SYSTEM);
-		force.setTime(System.currentTimeMillis());
 		session.getSession().writeAndFlush(force);
 
 	}

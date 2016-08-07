@@ -11,19 +11,17 @@ public class MessageHandler implements PBRequestHandler {
 	public Message process(PBSession session, Message msg) {
 		SessionManage sessionManager = (SessionManage) ContexHolder
 				.getBean("pbSessionManage");
-		PBSession receiver_session = sessionManager.get(msg.getReceiver_uid());
-		Message mes = new Message();
-		mes.setTitle(PBCONSTANT.MESSAGE_REPLY);
-		mes.setSender_uid(PBCONSTANT.SYSTEM);
-		mes.setType(PBCONSTANT.MESSAGE_REPLY);
+		PBSession receiver_session = sessionManager.get(msg.get("r_uid"));
+		Message reply = new Message();
+		reply.setType(PBCONSTANT.MESSAGE_REPLY_FLAG);
 		if (receiver_session != null && receiver_session.getSession().isActive()) {
 			receiver_session.getSession().writeAndFlush(msg);
-			mes.setReceiver_uid(msg.getSender_uid());
-			mes.setContent(PBCONSTANT.SUCCESS);
+			reply.setParam("r_uid",msg.get("s_uid"));
+			reply.setParam("st","sc");
 		} else {
-			mes.setContent(PBCONSTANT.USER_OFFLINE);
+			msg.setParam("st","fl");
 		}
-		mes.setTime(System.currentTimeMillis());
-		return mes;
+		reply.setParam("s_uid",PBCONSTANT.SYSTEM);
+		return reply;
 	}
 }

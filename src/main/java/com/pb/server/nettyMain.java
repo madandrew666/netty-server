@@ -1,5 +1,8 @@
 package com.pb.server;
 
+import com.pb.server.filter.MessageDecoder;
+import com.pb.server.filter.MessageEncoder;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +26,13 @@ public class nettyMain {
 	public static final int PORT = 8000;
 	public static Logger logger = LoggerFactory.getLogger(nettyMain.class);
 
+
+	private int maxFrameLength = 1024;
+	private int lengthFieldOffset = 0;
+	private int lengthFieldLength = 4;
+	private int lengthAdjustment = 4;
+	private int initialBytesToStrip = 0;
+
 	public static void main(String[] args) {
 		nettyMain server = new nettyMain();
 		server.start();
@@ -43,9 +53,11 @@ public class nettyMain {
 				@Override
 				protected void initChannel(SocketChannel channel)
 						throws Exception {
-					channel.pipeline().addLast(new ObjectEncoder());
-					//channel.pipeline().addLast(new MessageDecoder());
-					channel.pipeline().addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+					channel.pipeline().addLast(new MessageEncoder());
+					//channel.pipeline().addLast(new ObjectEncoder());
+					channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(maxFrameLength,lengthFieldOffset,lengthFieldLength,lengthAdjustment,initialBytesToStrip));
+					channel.pipeline().addLast(new MessageDecoder());
+					//channel.pipeline().addLast(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
 					channel.pipeline().addLast((ChannelHandler)ContexHolder.getBean("pbIOHandler"));
 				}
 
