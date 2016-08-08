@@ -12,7 +12,6 @@ public class ContexHolder {
 	}
 
 	public static <T> T getBean(Class<T> c) {
-
 		return context.getBean(c);
 	}
 }

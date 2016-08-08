@@ -19,7 +19,7 @@ public class LoginHandler implements PBRequestHandler {
 		reply.setType(PBCONSTANT.LOGIN_REPLY_FLAG);
 
 		SessionManage sessionManager = (SessionManage) ContexHolder
-				.getBean("pbSessionManage");
+				.getBean("sessionManager");
 		logger.info("Received loginMsg:"+msg.toString());
 
 		if (msg.get("s_uid").equals("test1")

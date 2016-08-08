@@ -6,8 +6,10 @@ public class PBCONSTANT {
 	public static final byte MESSAGE_FLAG = 2;
 	public static final byte MESSAGE_REPLY_FLAG = 21;
 	public static final byte LOGOUT_FLAG =3;
+	public static final byte ACK_FLAG = 5;
 
 
+	public static final String ACK = "ack";
 	public static final String PING = "ping";
 	public static final String LOGIN = "login";
 	public static final String LOGIN_REPLY = "login_reply";
